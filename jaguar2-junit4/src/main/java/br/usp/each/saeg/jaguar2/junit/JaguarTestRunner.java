@@ -11,6 +11,7 @@
 package br.usp.each.saeg.jaguar2.junit;
 
 import org.junit.internal.TextListener;
+import org.junit.runner.Description;
 import org.junit.runner.JUnitCore;
 
 public class JaguarTestRunner {
@@ -41,5 +42,9 @@ public class JaguarTestRunner {
             e.printStackTrace();
             System.exit(1);
         }
+    }
+
+    public static String getTestId(Description d) {
+        return d.getClassName() + "#" + d.getMethodName();
     }
 }

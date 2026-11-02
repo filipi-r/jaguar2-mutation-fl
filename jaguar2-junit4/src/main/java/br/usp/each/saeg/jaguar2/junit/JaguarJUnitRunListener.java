@@ -10,7 +10,10 @@
  */
 package br.usp.each.saeg.jaguar2.junit;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.util.HashSet;
 
 import org.junit.runner.Description;
 import org.junit.runner.Result;
@@ -45,6 +48,8 @@ public class JaguarJUnitRunListener extends RunListener {
 
     private boolean skip;
 
+    private HashSet<String> failingTestsSet;
+
     /**
      * Instantiate a {@link JaguarJUnitRunListener} for a given instance
      * of the {@link Jaguar} class.
@@ -53,6 +58,7 @@ public class JaguarJUnitRunListener extends RunListener {
      */
     public JaguarJUnitRunListener(final Jaguar jaguar) {
         this.jaguar = jaguar;
+        failingTestsSet = new HashSet<>();
     }
 
     /**
@@ -106,6 +112,7 @@ public class JaguarJUnitRunListener extends RunListener {
     @Override
     public void testFailure(final Failure failure) {
         fail = true;
+        failingTestsSet.add(JaguarTestRunner.getTestId(failure.getDescription()));
     }
 
     @Override
@@ -115,7 +122,23 @@ public class JaguarJUnitRunListener extends RunListener {
 
     @Override
     public void testRunFinished(final Result result) throws Exception {
+        saveFailingTests();
         jaguar.testRunFinished();
     }
 
+    private void saveFailingTests() {
+        String filePath = System.getProperty(MutationInversibleRule.PROPERTY_FAILING_TESTS_FILE);
+        if(filePath == null)
+            filePath = "target/failing-tests.txt";
+
+        try {
+            File file = new File(filePath);
+            if(file.getParentFile() != null)
+                file.getParentFile().mkdirs();
+
+            Files.write(file.toPath(), failingTestsSet);
+        } catch (IOException e){
+            System.err.println("Failed to write failing tests file: " + e.getMessage());
+        }
+    }
 }
