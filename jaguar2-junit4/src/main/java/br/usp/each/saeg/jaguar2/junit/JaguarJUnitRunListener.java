@@ -10,9 +10,10 @@
  */
 package br.usp.each.saeg.jaguar2.junit;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.HashSet;
 
 import org.junit.runner.Description;
@@ -92,6 +93,7 @@ public class JaguarJUnitRunListener extends RunListener {
 
     @Override
     public void testRunStarted(final Description description) {
+        ResultCollector.clear();
         jaguar.testRunStarted();
     }
 
@@ -122,23 +124,6 @@ public class JaguarJUnitRunListener extends RunListener {
 
     @Override
     public void testRunFinished(final Result result) throws Exception {
-        saveFailingTests();
         jaguar.testRunFinished();
-    }
-
-    private void saveFailingTests() {
-        String filePath = System.getProperty(MutationInversibleRule.PROPERTY_FAILING_TESTS_FILE);
-        if(filePath == null)
-            filePath = "target/failing-tests.txt";
-
-        try {
-            File file = new File(filePath);
-            if(file.getParentFile() != null)
-                file.getParentFile().mkdirs();
-
-            Files.write(file.toPath(), failingTestsSet);
-        } catch (IOException e){
-            System.err.println("Failed to write failing tests file: " + e.getMessage());
-        }
     }
 }
