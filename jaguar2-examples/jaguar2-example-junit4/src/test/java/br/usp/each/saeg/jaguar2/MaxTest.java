@@ -11,9 +11,15 @@
 package br.usp.each.saeg.jaguar2;
 
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 
+import br.usp.each.saeg.jaguar2.junit.MutationInversibleRule;
+
 public class MaxTest {
+
+    @Rule
+    public MutationInversibleRule inversionRule = new MutationInversibleRule();
 
     @Test
     public void test1() {
