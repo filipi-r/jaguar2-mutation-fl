@@ -29,6 +29,7 @@
 	<modules>
 		<module>jaguar2-ba-dua-provider</module>
 		<module>jaguar2-jacoco-provider</module>
+		<module>jaguar2-pitest-provider</module>
 	</modules>
 
 </project>
